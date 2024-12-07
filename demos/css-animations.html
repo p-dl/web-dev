@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS Animations Demo</title>
+    <style>
+      /* General Styling */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background-color: #f4f4f4;
+      }
+      h1 {
+        margin-top: 30px;
+        color: #333;
+      }
+
+      /* Animated Box */
+      .circle {
+        width: 100px;
+        height: 100px;
+        background-color: #4caf50;
+        margin: 20px auto;
+        border-radius: 10px;
+        animation: bounce 2s infinite ease-in-out;
+      }
+
+      /* Keyframe Animation: Bounce */
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-150px);
+        }
+      }
+
+      /* Hover Animation */
+      .box {
+        width: 100px;
+        height: 100px;
+        background-color: #ff5733;
+        border-radius: 10%;
+        margin: 20px auto;
+        transition: all 0.5s ease;
+      }
+
+      .box:hover {
+        transform: scale(1.5) rotate(360deg);
+        background-color: #ffc300;
+      }
+
+      /* Loading Bar Animation */
+      .loading-bar {
+        width: 0;
+        height: 20px;
+        background-color: #3498db;
+        margin: 30px auto;
+        animation: load 3s infinite alternate;
+      }
+
+      @keyframes load {
+        0% {
+          width: 0;
+        }
+        100% {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CSS Animations Demonstration</h1>
+
+    <!-- Bounce Animation -->
+    <div class="circle"></div>
+    <p>Bouncing Circle Animation</p>
+
+    <!-- Hover Animation -->
+    <div class="box"></div>
+    <p>Hover over the Box</p>
+
+    <!-- Loading Bar Animation -->
+    <div class="loading-bar"></div>
+    <p>Loading Bar Animation</p>
+  </body>
+</html>

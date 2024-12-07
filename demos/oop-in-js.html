@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OOP in JavaScript</title>
+  </head>
+  <body>
+    <h1>OOP Demonstration in JavaScript</h1>
+    <button id="showPerson">Show Person</button>
+    <button id="showDeveloper">Show Developer</button>
+    <div id="output" style="margin-top: 20px; font-size: 18px"></div>
+
+    <script>
+      // Base Class: Person
+      class Person {
+        constructor(name, age) {
+          this.name = name;
+          this.age = age;
+        }
+
+        // Method for introducing a person
+        introduce() {
+          return `Hi, I am ${this.name} and I am ${this.age} years old.`;
+        }
+      }
+
+      // Derived Class: Developer (inherits from Person)
+      class Developer extends Person {
+        constructor(name, age, programmingLanguage) {
+          super(name, age); // Call the base class constructor
+          this.programmingLanguage = programmingLanguage;
+        }
+
+        // Overriding the introduce method
+        introduce() {
+          return `Hi, I am ${this.name}, a developer skilled in ${this.programmingLanguage}.`;
+        }
+
+        // New method for coding
+        code() {
+          return `${this.name} is coding in ${this.programmingLanguage}...`;
+        }
+      }
+
+      // DOM Manipulation for Demonstration
+      const outputDiv = document.getElementById("output");
+
+      // Create instances of Person and Developer
+      const person = new Person("John Doe", 30);
+      const developer = new Developer("Jane Smith", 28, "JavaScript");
+
+      // Show Person Details
+      document.getElementById("showPerson").addEventListener("click", () => {
+        outputDiv.innerHTML = `<p>${person.introduce()}</p>`;
+      });
+
+      // Show Developer Details
+      document.getElementById("showDeveloper").addEventListener("click", () => {
+        outputDiv.innerHTML = `
+        <p>${developer.introduce()}</p>
+        <p>${developer.code()}</p>
+      `;
+      });
+    </script>
+  </body>
+</html>

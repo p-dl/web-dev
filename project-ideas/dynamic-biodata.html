@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biodata Generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+
+      #app {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+      }
+
+      button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 15px;
+        font-size: 16px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      input,
+      select {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      .popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto; /* Allow the popup to scroll if content exceeds the viewport */
+      }
+
+      .popup-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 400px;
+        max-height: 90vh; /* Limits content height to 90% of viewport height */
+        overflow-y: auto; /* Enables internal scrollbar when content overflows */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      li {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>{{ cv1.name.split(' ')[0] }}'s Dynamic Biodata</h1>
+      </header>
+      <div class="container">
+        <button @click="showForm = true">Generate Biodata</button>
+
+        <section class="section">
+          <h2>About Me</h2>
+          <p>
+            Hello! My name is {{ cv1.name }}, and I am {{ cv1.role }} from {{
+            cv1.location }}. I {{ cv1.task }} at {{ cv1.workplace }} and have {{
+            cv1.yearsOfExperience }} years of professional experience in {{
+            cv1.field }}.
+          </p>
+          <p>
+            My interests include {{ cv1.interests.join(", ") }}, particularly
+            topics related to {{ cv1.coreInterest }}.
+          </p>
+        </section>
+        <section class="section">
+          <h2>Skills</h2>
+          <ul>
+            <li v-for="skill in cv1.skills" :key="skill">{{ skill }}</li>
+          </ul>
+        </section>
+        <section class="section">
+          <h2>Contact Me</h2>
+          <ul>
+            <li>Email: <a :href="'mailto:' + cv1.email">{{ cv1.email }}</a></li>
+            <li>
+              GitHub:
+              <a :href="'https://github.com/' + cv1.githubId" target="_blank">
+                github.com/{{ cv1.githubId }}
+              </a>
+            </li>
+            <li>
+              LinkedIn:
+              <a
+                :href="'https://linkedin.com/in/' + cv1.linkedInId"
+                target="_blank"
+              >
+                linkedin.com/in/{{ cv1.linkedInId }}
+              </a>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <footer>
+        <p>&copy; {{ currentYear }} {{ cv1.name }}. All rights reserved.</p>
+      </footer>
+
+      <!-- Popup Form -->
+      <div v-if="showForm" class="popup">
+        <div class="popup-content">
+          <h2>Generate Your Biodata</h2>
+          <form @submit.prevent="updateBiodata">
+            <input v-model="form.name" placeholder="Full Name" required />
+            <input v-model="form.email" placeholder="Email" required />
+            <input v-model="form.githubId" placeholder="GitHub ID" />
+            <input v-model="form.linkedInId" placeholder="LinkedIn ID" />
+            <input v-model="form.task" placeholder="Your Task (e.g., work)" />
+            <input v-model="form.role" placeholder="Your Role" />
+            <input v-model="form.location" placeholder="Location" />
+            <input v-model="form.workplace" placeholder="Workplace" />
+            <input
+              v-model.number="form.yearsOfExperience"
+              type="number"
+              placeholder="Years of Experience"
+            />
+            <input v-model="form.field" placeholder="Field" />
+            <select v-model="form.coreInterest">
+              <option disabled value="">Select Core Interest</option>
+              <option
+                v-for="interest in coreInterests"
+                :key="interest"
+                :value="interest"
+              >
+                {{ interest }}
+              </option>
+            </select>
+            <input
+              v-model="form.interests"
+              placeholder="Interests (comma separated)"
+            />
+            <input
+              v-model="form.skills"
+              placeholder="Skills (comma separated)"
+            />
+            <button type="submit">Generate</button>
+            <button @click="showForm = false">Close</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            currentYear: new Date().getFullYear(),
+            showForm: false,
+            cv1: {
+              name: "Sabin Bhattarai",
+              email: "sabin@gmail.com",
+              githubId: "sab-in",
+              linkedInId: "sab-in",
+              task: "study",
+              role: "a student",
+              location: "Kathmandu, Nepal",
+              workplace: "Techspire College",
+              yearsOfExperience: 5,
+              field: "web development",
+              interests: ["programming", "AI", "physics"],
+              coreInterest: "the universe and time-velocity dynamics",
+              skills: [
+                "Proficient in TypeScript",
+                "Experienced with Python",
+                "Skilled in Business Analysis",
+              ],
+            },
+            form: {
+              name: "",
+              email: "",
+              githubId: "",
+              linkedInId: "",
+              task: "",
+              role: "",
+              location: "",
+              workplace: "",
+              yearsOfExperience: 0,
+              field: "",
+              coreInterest: "",
+              interests: "",
+              skills: "",
+            },
+            coreInterests: [
+              "Artificial Intelligence",
+              "The Universe",
+              "Time-Velocity Dynamics",
+              "Quantum Mechanics",
+              "Astrophysics",
+              "Machine Learning",
+              "Dark Matter & Energy",
+              "Multiverse Theory",
+              "Black Hole Dynamics",
+              "Frontend Development",
+              "DevOps Practices",
+              "Neural Networks",
+              "Cosmology",
+              "Programming Paradigms",
+              "Angular Framework",
+            ],
+          };
+        },
+        methods: {
+          updateBiodata() {
+            this.cv1 = {
+              ...this.form,
+              interests: this.form.interests.split(",").map((i) => i.trim()),
+              skills: this.form.skills.split(",").map((s) => s.trim()),
+            };
+            this.showForm = false;
+          },
+        },
+        mounted() {
+          document.title = `${this.cv1.name.split(" ")[0]}'s Biodata`;
+        },
+      });
+
+      app.mount("#app");
+    </script>
+  </body>
+</html>

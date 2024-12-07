@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        font-family: Arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Dynamic HTML Table</h2>
+
+    <div id="app">
+      <table border="1" id="dynamicTable"></table>
+    </div>
+
+    <script>
+      // Define table headers and data
+      const heads = ["ID", "Name", "Age", "Country"];
+      const datas = [
+        { ID: 1, Name: "John Doe", Age: 25, Country: "USA" },
+        { ID: 2, Name: "Jane Smith", Age: 30, Country: "Canada" },
+        { ID: 3, Name: "Sam Wilson", Age: 22, Country: "Australia" },
+        { ID: 4, Name: "Emily Johnson", Age: 28, Country: "UK" },
+        { ID: 5, Name: "Michael Brown", Age: 35, Country: "Germany" },
+      ];
+
+      // Function to create the table
+      function createTable() {
+        const table = document.getElementById("dynamicTable");
+
+        // Create table header row
+        const headerRow = document.createElement("tr");
+        heads.forEach((head) => {
+          const th = document.createElement("th");
+          th.textContent = head;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        // Create table data rows
+        datas.forEach((data) => {
+          const row = document.createElement("tr");
+
+          // Iterate through object values to fill the row
+          Object.values(data).forEach((value) => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            row.appendChild(td);
+          });
+
+          table.appendChild(row);
+        });
+      }
+
+      // Generate the table on page load
+      createTable();
+    </script>
+  </body>
+</html>

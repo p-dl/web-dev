@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      /* Basic Styling */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        margin-top: 20px;
+        color: #444;
+      }
+
+      #weather-container {
+        margin: 50px auto;
+        padding: 20px;
+        max-width: 400px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+
+      #location,
+      #temperature,
+      #description {
+        margin: 10px 0;
+        font-size: 1.2em;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1em;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Current Weather</h1>
+    <div id="weather-container">
+      <p id="location">Fetching location...</p>
+      <p id="temperature">--</p>
+      <p id="description">--</p>
+      <button id="refresh">Refresh Weather</button>
+    </div>
+
+    <script>
+      // Replace with your OpenWeatherMap API Key
+      const API_KEY = "f6268ca2bc3cd0995900596d67dca658";
+
+      // DOM Elements
+      const locationElement = document.getElementById("location");
+      const temperatureElement = document.getElementById("temperature");
+      const descriptionElement = document.getElementById("description");
+      const refreshButton = document.getElementById("refresh");
+
+      // Fetch Weather Data
+      function fetchWeather(lat, lon) {
+        const url = `https://api.openweathermap.org/data/3.0/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            // Extract weather details
+            const { name } = data;
+            const { temp } = data.main;
+            const { description } = data.weather[0];
+
+            // Update UI
+            locationElement.textContent = `Location: ${name}`;
+            temperatureElement.textContent = `Temperature: ${temp} °C`;
+            descriptionElement.textContent = `Condition: ${description}`;
+          })
+          .catch((error) => {
+            console.error("Error fetching weather data:", error);
+            locationElement.textContent = "Unable to fetch weather data.";
+          });
+      }
+
+      // Get User Location
+      function getLocationAndFetchWeather() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              fetchWeather(latitude, longitude);
+            },
+            (error) => {
+              console.error("Error getting location:", error);
+              locationElement.textContent = "Location access denied.";
+            }
+          );
+        } else {
+          locationElement.textContent =
+            "Geolocation is not supported by this browser.";
+        }
+      }
+
+      // Initial Fetch
+      getLocationAndFetchWeather();
+
+      // Refresh Button Handler
+      refreshButton.addEventListener("click", getLocationAndFetchWeather);
+    </script>
+  </body>
+</html>

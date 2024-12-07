@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Demos</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      header {
+        background-color: #4caf50;
+        padding: 20px;
+        text-align: center;
+        color: white;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+
+      main {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .project-list {
+        list-style-type: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        width: 100%;
+        max-width: 1200px;
+      }
+
+      .project-item {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .project-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .project-item a {
+        text-decoration: none;
+        color: #4caf50;
+        font-size: 1.2em;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .project-item p {
+        font-size: 1em;
+        color: #555;
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #333;
+        color: white;
+      }
+
+      @media (max-width: 600px) {
+        header {
+          font-size: 1.2em;
+        }
+        .project-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>Demo: HTML, CSS and JAVASCRIPT</header>
+
+    <main>
+      <ul class="project-list">
+        <!-- Demos Section -->
+        <li class="project-item">
+          <a href="demos/calculator.html" target="_blank">Calculator Demo</a>
+          <p>
+            A basic interactive calculator built using HTML, CSS, and
+            JavaScript.
+          </p>
+          <span>Level: 1</span>
+        </li>
+        <li class="project-item">
+          <a href="demos/css-animations.html" target="_blank">CSS Animations</a>
+          <p>Explore some cool CSS animations with this demo.</p>
+          <span>Level: 1</span>
+        </li>
+        <li class="project-item">
+          <a href="demos/example-api-call.html" target="_blank"
+            >API Call Example</a
+          >
+          <p>A demo showing how to fetch data using an API in JavaScript.</p>
+          <span>Level: 1</span>
+        </li>
+        <li class="project-item">
+          <a href="demos/intro.html" target="_blank">Intro to JavaScript</a>
+          <p>An introductory demo to JavaScript for beginners.</p>
+          <span>Level: 0</span>
+        </li>
+        <li class="project-item">
+          <a href="demos/oop-in-js.html" target="_blank">OOP in JS</a>
+          <p>
+            Learn the fundamentals of Object-Oriented Programming with
+            JavaScript.
+          </p>
+          <span>Level: 2</span>
+        </li>
+        <li class="project-item">
+          <a href="demos/table-using-js.html" target="_blank">Table using JS</a>
+          <p>A table dynamically generated with JavaScript.</p>
+          <span>Level: 2</span>
+        </li>
+        <li class="project-item">
+          <a href="demos/table-using-vue.html" target="_blank"
+            >Table using Vue.js</a
+          >
+          <p>Vue.js-powered table demo with dynamic data.</p>
+          <span>Level: 1</span>
+        </li>
+
+        <!-- Project Ideas Section -->
+        <li class="project-item">
+          <a href="project-ideas/dynamic-biodata.html" target="_blank"
+            >Dynamic Biodata</a
+          >
+          <p>
+            Build a biodata dynamically with JavaScript and display the user
+            information.
+          </p>
+          <span>Level: 2</span>
+        </li>
+        <li class="project-item">
+          <a href="project-ideas/snake-game.html" target="_blank">Snake Game</a>
+          <p>A simple classic Snake game using JavaScript.</p>
+          <span>Level: 4</span>
+        </li>
+        <li class="project-item">
+          <a href="project-ideas/todo-app.html" target="_blank">To-Do App</a>
+          <p>
+            A task management app to add, delete, and mark tasks as complete.
+          </p>
+          <span>Level: 3</span>
+        </li>
+        <li class="project-item">
+          <a href="project-ideas/weather-app.html" target="_blank"
+            >Weather App</a
+          >
+          <p>
+            Check current weather by entering your location using a weather API.
+          </p>
+          <span>Level: 3</span>
+        </li>
+      </ul>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 My Demo Projects | Created with ❤️</p>
+    </footer>
+  </body>
+</html>

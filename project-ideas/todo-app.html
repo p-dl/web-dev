@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO List App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .todo-container {
+        width: 100%;
+        max-width: 400px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      input {
+        width: 70%;
+        padding: 10px;
+        margin-right: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 10px;
+        font-size: 14px;
+        color: #fff;
+        background-color: #28a745;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #218838;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.3s;
+      }
+
+      li.completed {
+        text-decoration: line-through;
+        color: #999;
+      }
+
+      .delete-btn {
+        background-color: #dc3545;
+        padding: 5px 10px;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      .delete-btn:hover {
+        background-color: #c82333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="todo-container">
+      <h1>TODO List</h1>
+      <div>
+        <input type="text" id="taskInput" placeholder="Add a new task..." />
+        <button id="addTaskBtn">Add</button>
+      </div>
+      <ul id="taskList"></ul>
+    </div>
+
+    <script>
+      class Task {
+        constructor(id, content, completed = false) {
+          this.id = id;
+          this.content = content;
+          this.completed = completed;
+        }
+
+        toggleComplete() {
+          this.completed = !this.completed;
+        }
+      }
+
+      class TodoApp {
+        constructor() {
+          this.tasks = [];
+          this.taskInput = document.getElementById("taskInput");
+          this.taskList = document.getElementById("taskList");
+          this.addTaskBtn = document.getElementById("addTaskBtn");
+
+          this.loadTasksFromLocalStorage();
+          this.addTaskBtn.addEventListener("click", () => this.addTask());
+          this.taskInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") this.addTask();
+          });
+        }
+
+        loadTasksFromLocalStorage() {
+          const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+          this.tasks = savedTasks.map(
+            (task) => new Task(task.id, task.content, task.completed)
+          );
+          this.renderTasks();
+        }
+
+        saveTasksToLocalStorage() {
+          localStorage.setItem("tasks", JSON.stringify(this.tasks));
+        }
+
+        addTask() {
+          const taskContent = this.taskInput.value.trim();
+          if (taskContent === "") return;
+
+          const task = new Task(Date.now(), taskContent);
+          this.tasks.push(task);
+          this.saveTasksToLocalStorage();
+          this.renderTasks();
+          this.taskInput.value = "";
+        }
+
+        deleteTask(taskId) {
+          this.tasks = this.tasks.filter((task) => task.id !== taskId);
+          this.saveTasksToLocalStorage();
+          this.renderTasks();
+        }
+
+        toggleTaskCompletion(taskId) {
+          const task = this.tasks.find((t) => t.id === taskId);
+          if (task) {
+            task.toggleComplete();
+            this.saveTasksToLocalStorage();
+            this.renderTasks();
+          }
+        }
+
+        renderTasks() {
+          this.taskList.innerHTML = "";
+          this.tasks.forEach((task) => {
+            const li = document.createElement("li");
+            li.className = task.completed ? "completed" : "";
+            li.innerHTML = `
+              <span>${task.content}</span>
+              <div>
+                <button class="delete-btn" data-id="${task.id}">Delete</button>
+              </div>
+            `;
+
+            // Add click listener for toggling task completion
+            li.querySelector("span").addEventListener("click", () => {
+              this.toggleTaskCompletion(task.id);
+            });
+
+            // Add click listener for deleting task
+            li.querySelector(".delete-btn").addEventListener("click", () => {
+              this.deleteTask(task.id);
+            });
+
+            this.taskList.appendChild(li);
+          });
+        }
+      }
+
+      // Initialize the app
+      document.addEventListener("DOMContentLoaded", () => new TodoApp());
+    </script>
+  </body>
+</html>

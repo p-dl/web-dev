@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake Game</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #333;
+      }
+      canvas {
+        background-color: #000;
+        display: block;
+      }
+      h1 {
+        color: #fff;
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Snake Game using OOP javascript</h1>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <script>
+      class SnakeGame {
+        constructor(canvasId) {
+          this.canvas = document.getElementById(canvasId);
+          this.context = this.canvas.getContext("2d");
+          this.gridSize = 20; // Size of each grid block
+          this.snake = [{ x: 100, y: 100 }]; // Snake starts with one block
+          this.direction = "RIGHT"; // Initial direction
+          this.food = this.getRandomFoodPosition();
+          this.gameInterval = null;
+          this.score = 0;
+
+          // Bind keyboard input
+          document.addEventListener("keydown", this.changeDirection.bind(this));
+
+          // Start the game
+          this.startGame();
+        }
+
+        startGame() {
+          this.gameInterval = setInterval(() => this.update(), 100); // 100ms refresh rate
+        }
+
+        update() {
+          this.moveSnake();
+          this.checkCollisions();
+          this.checkFood();
+          this.render();
+        }
+
+        moveSnake() {
+          const head = { ...this.snake[0] };
+
+          // Move the head based on direction
+          switch (this.direction) {
+            case "UP":
+              head.y -= this.gridSize;
+              break;
+            case "DOWN":
+              head.y += this.gridSize;
+              break;
+            case "LEFT":
+              head.x -= this.gridSize;
+              break;
+            case "RIGHT":
+              head.x += this.gridSize;
+              break;
+          }
+
+          // Add new head to the snake
+          this.snake.unshift(head);
+
+          // Remove the tail if no food is eaten
+          if (head.x === this.food.x && head.y === this.food.y) {
+            this.score++;
+            this.food = this.getRandomFoodPosition();
+          } else {
+            this.snake.pop();
+          }
+        }
+
+        checkCollisions() {
+          const head = this.snake[0];
+
+          // Check wall collisions
+          if (
+            head.x < 0 ||
+            head.y < 0 ||
+            head.x >= this.canvas.width ||
+            head.y >= this.canvas.height
+          ) {
+            this.endGame();
+          }
+
+          // Check self-collision
+          for (let i = 1; i < this.snake.length; i++) {
+            if (head.x === this.snake[i].x && head.y === this.snake[i].y) {
+              this.endGame();
+            }
+          }
+        }
+
+        checkFood() {
+          // Food is handled in moveSnake
+        }
+
+        render() {
+          // Clear canvas
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // Draw snake
+          this.context.fillStyle = "lime";
+          this.snake.forEach((block) => {
+            this.context.fillRect(
+              block.x,
+              block.y,
+              this.gridSize,
+              this.gridSize
+            );
+          });
+
+          // Draw food
+          this.context.fillStyle = "red";
+          this.context.fillRect(
+            this.food.x,
+            this.food.y,
+            this.gridSize,
+            this.gridSize
+          );
+
+          // Display score
+          this.context.fillStyle = "white";
+          this.context.font = "16px Arial";
+          this.context.fillText(`Score: ${this.score}`, 10, 20);
+        }
+
+        changeDirection(event) {
+          const key = event.key;
+          const directions = [
+            "ArrowUp",
+            "ArrowDown",
+            "ArrowLeft",
+            "ArrowRight",
+          ];
+          if (!directions.includes(key)) return;
+
+          switch (key) {
+            case "ArrowUp":
+              if (this.direction !== "DOWN") this.direction = "UP";
+              break;
+            case "ArrowDown":
+              if (this.direction !== "UP") this.direction = "DOWN";
+              break;
+            case "ArrowLeft":
+              if (this.direction !== "RIGHT") this.direction = "LEFT";
+              break;
+            case "ArrowRight":
+              if (this.direction !== "LEFT") this.direction = "RIGHT";
+              break;
+          }
+        }
+
+        getRandomFoodPosition() {
+          const x =
+            Math.floor(Math.random() * (this.canvas.width / this.gridSize)) *
+            this.gridSize;
+          const y =
+            Math.floor(Math.random() * (this.canvas.height / this.gridSize)) *
+            this.gridSize;
+          return { x, y };
+        }
+
+        endGame() {
+          clearInterval(this.gameInterval);
+          alert(`Game Over! Your Score: ${this.score}`);
+          window.location.reload(); // Restart the game
+        }
+      }
+
+      // Start the game
+      new SnakeGame("gameCanvas");
+    </script>
+  </body>
+</html>
