@@ -28,7 +28,7 @@
     </style>
   </head>
   <body>
-    <h1>Snake Game using OOP javascript</h1>
+    <h1>Snake Game using OOP JavaScript</h1>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <script>
@@ -46,6 +46,7 @@
           // Bind keyboard input
           document.addEventListener("keydown", this.changeDirection.bind(this));
 
+          this.handleTouchEvents();
           // Start the game
           this.startGame();
         }
@@ -188,8 +189,47 @@
           alert(`Game Over! Your Score: ${this.score}`);
           window.location.reload(); // Restart the game
         }
-      }
 
+        handleTouchEvents() {
+          let startX, startY, endX, endY;
+
+          this.canvas.addEventListener("touchstart", (e) => {
+            e.preventDefault(); // Prevent default scroll behavior
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+          });
+
+          this.canvas.addEventListener("touchend", (e) => {
+            e.preventDefault(); // Prevent default scroll behavior
+            endX = e.changedTouches[0].clientX;
+            endY = e.changedTouches[0].clientY;
+
+            const deltaX = endX - startX;
+            const deltaY = endY - startY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+              if (deltaX > 0 && this.direction !== "LEFT")
+                this.direction = "RIGHT";
+              else if (deltaX < 0 && this.direction !== "RIGHT")
+                this.direction = "LEFT";
+            } else {
+              if (deltaY > 0 && this.direction !== "UP")
+                this.direction = "DOWN";
+              else if (deltaY < 0 && this.direction !== "DOWN")
+                this.direction = "UP";
+            }
+          });
+
+          // Prevent entire document from scrolling when touching the canvas
+          document.body.addEventListener(
+            "touchmove",
+            (e) => e.preventDefault(),
+            {
+              passive: false,
+            }
+          );
+        }
+      }
       // Start the game
       new SnakeGame("gameCanvas");
     </script>
