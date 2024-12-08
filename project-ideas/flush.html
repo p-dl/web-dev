@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teen Patti Game</title>
+    <style>
+      /* General Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #2e7d32; /* Green table background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: #fff;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #ffd700; /* Gold text */
+      }
+
+      /* Game Container */
+      .game-container {
+        text-align: center;
+        background: #1b5e20;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #000;
+        max-width: 600px;
+        width: 100%;
+      }
+
+      /* Card Styling */
+      .card {
+        display: inline-block;
+        width: 80px;
+        height: 120px;
+        margin: 10px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        line-height: 120px;
+        color: #333;
+        position: relative;
+      }
+
+      /* Button */
+      .btn {
+        background-color: #ff9800;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #f57c00;
+      }
+
+      /* Player Area */
+      .player {
+        margin-bottom: 15px;
+      }
+
+      .player h3 {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <h1>Teen Patti Game</h1>
+      <div id="player1" class="player">
+        <h3>Player 1</h3>
+        <div id="cards1"></div>
+      </div>
+      <div id="player2" class="player">
+        <h3>Player 2</h3>
+        <div id="cards2"></div>
+      </div>
+      <button class="btn" onclick="dealCards()">Deal Cards</button>
+    </div>
+
+    <script>
+      // Deck of Cards: Suits and Ranks
+      const suits = ["♠", "♥", "♦", "♣"]; // Spades, Hearts, Diamonds, Clubs
+      const ranks = [
+        "A",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+      ];
+
+      // Function to Generate a Full Deck
+      function generateDeck() {
+        const deck = [];
+        for (let suit of suits) {
+          for (let rank of ranks) {
+            deck.push(`${rank}${suit}`);
+          }
+        }
+        return deck;
+      }
+
+      // Shuffle Function
+      function shuffleDeck(deck) {
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        return deck;
+      }
+
+      // Function to Deal Cards to Players
+      function dealCards() {
+        const deck = shuffleDeck(generateDeck());
+
+        // Assign 3 cards to Player 1 and Player 2
+        const player1Cards = deck.slice(0, 3);
+        const player2Cards = deck.slice(3, 6);
+
+        // Display Cards
+        displayCards("cards1", player1Cards);
+        displayCards("cards2", player2Cards);
+      }
+
+      // Function to Display Cards
+      function displayCards(containerId, cards) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = ""; // Clear previous cards
+        cards.forEach((card) => {
+          const cardElement = document.createElement("div");
+          cardElement.classList.add("card");
+          cardElement.textContent = card;
+          container.appendChild(cardElement);
+        });
+      }
+    </script>
+  </body>
+</html>
