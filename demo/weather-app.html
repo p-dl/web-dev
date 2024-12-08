@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Forecast Dashboard</title>
+    <style>
+      :root {
+        --primary-color: #2e86de;
+        --background-color: #f0f4f8;
+        --card-background: #ffffff;
+        --text-color: #333;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .weather-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .tab-button {
+        background-color: #f1f5f9;
+        border: none;
+        padding: 10px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 5px;
+      }
+
+      .tab-button.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      #weather-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 20px;
+        background-color: var(--card-background);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .weather-card {
+        background-color: #f1f5f9;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .weather-card:hover {
+        transform: scale(1.05);
+      }
+
+      .weather-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 10px;
+      }
+
+      .weather-card p {
+        margin: 5px 0;
+      }
+
+      #location-info {
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      #refresh-btn {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #refresh-btn:hover {
+        background-color: #1a5f8e;
+      }
+
+      .loading {
+        text-align: center;
+        font-size: 1.2em;
+        color: var(--primary-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="location-info">Weather Forecast</div>
+
+      <div class="weather-tabs">
+        <button class="tab-button active" data-tab="hourly">Hourly</button>
+        <button class="tab-button" data-tab="daily">Daily</button>
+        <button class="tab-button" data-tab="minutely">Minutely</button>
+      </div>
+
+      <div id="weather-container" class="loading">Loading...</div>
+
+      <button id="refresh-btn">Refresh Weather</button>
+    </div>
+
+    <script>
+      // API Configuration
+      const API_KEY = "B4Vw8Vu1biYPZ4JqbtERgsYM8fdTyTC5";
+      const weatherContainer = document.getElementById("weather-container");
+      const locationInfo = document.getElementById("location-info");
+      const refreshBtn = document.getElementById("refresh-btn");
+      const tabButtons = document.querySelectorAll(".tab-button");
+
+      // Utility Functions
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function getWeatherIcon(weatherCode) {
+        // Expanded icon mapping based on weather codes
+        const weatherIcons = {
+          1000: "☀️", // Clear
+          1100: "🌤️", // Mostly Clear
+          2000: "🌥️", // Partly Cloudy
+          3000: "☁️", // Cloudy
+          4000: "🌧️", // Drizzle
+          5000: "🌧️", // Rain
+          6000: "🌨️", // Freezing Rain
+          7000: "🌨️", // Snow
+        };
+        return weatherIcons[weatherCode] || "❓";
+      }
+
+      // Display Function
+      function displayWeatherData(data, type) {
+        weatherContainer.innerHTML = ""; // Clear previous data
+        const timeline = data.timelines[type];
+
+        timeline.slice(0, 15).forEach((entry) => {
+          const weatherCard = document.createElement("div");
+          weatherCard.classList.add("weather-card");
+
+          const weatherCode = entry.values.weatherCode || 2000;
+          const icon = getWeatherIcon(weatherCode);
+          const time = formatDate(entry.time);
+
+          weatherCard.innerHTML = `
+            <h3>${icon} ${time}</h3>
+            <p>Temp: ${entry.values.temperatureAvg?.toFixed(1) || "N/A"}°C</p>
+            <p>Feels Like: ${
+              entry.values.temperatureApparent?.toFixed(1) || "N/A"
+            }°C</p>
+            <p>Humidity: ${entry.values.humidityAvg?.toFixed(1) || "N/A"}%</p>
+            <p>Cloud Cover: ${entry.values.cloudCover?.toFixed(1) || "N/A"}%</p>
+            <p>Wind Speed: ${
+              entry.values.windSpeedAvg?.toFixed(1) || "N/A"
+            } m/s</p>
+            <p>Visibility: ${
+              entry.values.visibilityAvg?.toFixed(1) || "N/A"
+            } km</p>
+            <p>UV Index: ${entry.values.uvIndexAvg?.toFixed(1) || "N/A"}</p>
+          `;
+
+          weatherContainer.appendChild(weatherCard);
+        });
+      }
+
+      // Fetch Weather Data
+      async function fetchWeather(lat, lon) {
+        try {
+          weatherContainer.innerHTML =
+            '<div class="loading">Loading weather data...</div>';
+          const url = `https://api.tomorrow.io/v4/weather/forecast?location=${lat},${lon}&apikey=${API_KEY}`;
+
+          const response = await fetch(url);
+          const data = await response.json();
+          localStorage.setItem("weatherData", JSON.stringify(data));
+
+          locationInfo.textContent = `Weather Forecast for ${lat.toFixed(
+            2
+          )}°N, ${lon.toFixed(2)}°E`;
+          displayWeatherData(data, "hourly");
+        } catch (error) {
+          weatherContainer.innerHTML = `<p>Unable to fetch weather data. ${error.message}</p>`;
+        }
+      }
+
+      // Get User Location
+      function getLocationAndFetchWeather() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) =>
+              fetchWeather(position.coords.latitude, position.coords.longitude),
+            () => fetchWeather(27.7172, 85.324) // Fallback to Kathmandu
+          );
+        } else {
+          fetchWeather(27.7172, 85.324);
+        }
+      }
+
+      // Tab Switch Events
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          tabButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+          const dataType = button.getAttribute("data-tab");
+          const lastData = JSON.parse(localStorage.getItem("weatherData"));
+          if (lastData) displayWeatherData(lastData, dataType);
+        });
+      });
+
+      // Refresh Event
+      refreshBtn.addEventListener("click", getLocationAndFetchWeather);
+
+      // Initial Load
+      getLocationAndFetchWeather();
+    </script>
+  </body>
+</html>
